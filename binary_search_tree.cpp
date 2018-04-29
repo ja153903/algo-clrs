@@ -68,6 +68,34 @@ void levelOrderWalk(shared_ptr<TreeNode<T>> head) {
   }
 }
 
+template <class T>
+shared_ptr<TreeNode<T>> search(shared_ptr<TreeNode<T>> head, T target) {
+  if (head == NULL || head->val == target) {
+    return head;
+  }
+  if (target < head->val) {
+    return search(head->left, target);
+  }
+
+  return search(head->right, target);
+}
+
+template <class T>
+shared_ptr<TreeNode<T>> treeMinimum(shared_ptr<TreeNode<T>> head) {
+  while (head != NULL) {
+    head = head->left;
+  }
+  return head;
+}
+
+template <class T>
+shared_ptr<TreeNode<T>> treeMaximum(shared_ptr<TreeNode<T>> head) {
+  while (head != NULL) {
+    head = head->right;
+  }
+  return head;
+}
+
 int main() {
 
   shared_ptr<TreeNode<int>> head(new TreeNode<int>(5));
