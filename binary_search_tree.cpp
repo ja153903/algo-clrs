@@ -8,7 +8,8 @@ public:
   T val;
   shared_ptr<TreeNode<T>> left;
   shared_ptr<TreeNode<T>> right;
-  TreeNode<T>(T val): val(val), left(NULL), right(NULL) {}
+  shared_ptr<TreeNode<T>> parent;
+  TreeNode<T>(T val): val(val), left(NULL), right(NULL), parent(NULL) {}
 };
 
 template <class T>
@@ -19,8 +20,10 @@ void generateTree(shared_ptr<TreeNode<T>> &head, T val) {
   } else {
     if (val < head->val) {
       generateTree(head->left, val);
+      head->left->parent = head;
     } else {
       generateTree(head->right, val);
+      head->right->parent = head;
     }
   }
 }
@@ -82,7 +85,7 @@ shared_ptr<TreeNode<T>> search(shared_ptr<TreeNode<T>> head, T target) {
 
 template <class T>
 shared_ptr<TreeNode<T>> treeMinimum(shared_ptr<TreeNode<T>> head) {
-  while (head != NULL) {
+  while (head->left != NULL) {
     head = head->left;
   }
   return head;
@@ -90,10 +93,42 @@ shared_ptr<TreeNode<T>> treeMinimum(shared_ptr<TreeNode<T>> head) {
 
 template <class T>
 shared_ptr<TreeNode<T>> treeMaximum(shared_ptr<TreeNode<T>> head) {
-  while (head != NULL) {
+  while (head->right != NULL) {
     head = head->right;
   }
   return head;
+}
+
+template <class T>
+shared_ptr<TreeNode<T>> treeSuccessor(shared_ptr<TreeNode<T>> head) {
+  if (head->right != NULL) {
+    // minimum on the right subtree will be the successor
+    // if it exists
+    return treeMinimum(head->right);
+  }
+  shared_ptr<TreeNode<T>> y = head->parent;
+  while (y != NULL && head->val == y->right->val) {
+    head = y;
+    y = y->parent;
+  }
+
+  return y;
+
+}
+
+template <class T>
+shared_ptr<TreeNode<T>> treePredecessor(shared_ptr<TreeNode<T>> head) {
+  if (head->left != NULL) {
+    // max on the left subtree is predecessor
+    return treeMaximum(head->left);
+  }
+  shared_ptr<TreeNode<T>> y = head->parent;
+  while (y != NULL && head->val == y->left->val) {
+    head = y;
+    y = y->parent;
+  }
+
+  return y;
 }
 
 int main() {
@@ -106,7 +141,10 @@ int main() {
 
   //inOrderWalk(head);
   //preOrderWalk(head);
-  levelOrderWalk(head);
+  //levelOrderWalk(head);
+
+  cout << treeSuccessor(head->left->right)->val << endl;
+  cout << treePredecessor(head->left->right)->val << endl;
 
 
   return 0;
