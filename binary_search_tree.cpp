@@ -12,19 +12,43 @@ public:
   TreeNode<T>(T val): val(val), left(NULL), right(NULL), parent(NULL) {}
 };
 
+// template <class T>
+// void generateTree(shared_ptr<TreeNode<T>> &head, T val) {
+//   if (head == NULL) {
+//     shared_ptr<TreeNode<T>> ptr(new TreeNode<T>(val));
+//     head.swap(ptr);
+//   } else {
+//     if (val < head->val) {
+//       generateTree(head->left, val);
+//       head->left->parent = head;
+//     } else {
+//       generateTree(head->right, val);
+//       head->right->parent = head;
+//     }
+//   }
+// }
+
 template <class T>
-void generateTree(shared_ptr<TreeNode<T>> &head, T val) {
-  if (head == NULL) {
-    shared_ptr<TreeNode<T>> ptr(new TreeNode<T>(val));
-    head.swap(ptr);
-  } else {
-    if (val < head->val) {
-      generateTree(head->left, val);
-      head->left->parent = head;
+void insert(shared_ptr<TreeNode<T>> &head, T new_val) {
+  shared_ptr<TreeNode<T>> y = nullptr;
+  shared_ptr<TreeNode<T>> x = head;
+  shared_ptr<TreeNode<T>> z(new TreeNode<T>(new_val));
+
+  while (x != nullptr) {
+    y = x;
+    if (z->val < x->val) {
+      x = x->left;
     } else {
-      generateTree(head->right, val);
-      head->right->parent = head;
+      x = x->right;
     }
+  }
+  z->parent = y;
+  if (y == nullptr) {
+    head = z;
+  } else if (z->val < y->val) {
+    y->left = z;
+  } else {
+    y->right = z;
   }
 }
 
@@ -150,16 +174,16 @@ shared_ptr<TreeNode<T>> treePredecessor(shared_ptr<TreeNode<T>> head) {
 int main() {
 
   shared_ptr<TreeNode<int>> head(new TreeNode<int>(5));
-  generateTree(head, 6);
-  generateTree(head, 1);
-  generateTree(head, -3);
-  generateTree(head, 4);
+  insert(head, 6);
+  insert(head, 1);
+  insert(head, -3);
+  insert(head, 4);
 
-  //inOrderWalk(head);
+  inOrderWalk(head);
   //preOrderWalk(head);
   //levelOrderWalk(head);
 
-  cout << treeMinRec(head)->val << endl;
+  //cout << treeMinRec(head)->val << endl;
   //cout << treeSuccessor(head->left->right)->val << endl;
   //cout << treePredecessor(head->left->right)->val << endl;
 
