@@ -92,11 +92,27 @@ shared_ptr<TreeNode<T>> treeMinimum(shared_ptr<TreeNode<T>> head) {
 }
 
 template <class T>
+shared_ptr<TreeNode<T>> treeMinRec(shared_ptr<TreeNode<T>> head) {
+  if (head->left == NULL) {
+    return head;
+  }
+  return treeMinRec(head->left);
+}
+
+template <class T>
 shared_ptr<TreeNode<T>> treeMaximum(shared_ptr<TreeNode<T>> head) {
   while (head->right != NULL) {
     head = head->right;
   }
   return head;
+}
+
+template <class T>
+shared_ptr<TreeNode<T>> treeMaxRec(shared_ptr<TreeNode<T>> head) {
+  if (head->right == NULL) {
+    return head;
+  }
+  return treeMaxRec(head->right);
 }
 
 template <class T>
@@ -143,8 +159,9 @@ int main() {
   //preOrderWalk(head);
   //levelOrderWalk(head);
 
-  cout << treeSuccessor(head->left->right)->val << endl;
-  cout << treePredecessor(head->left->right)->val << endl;
+  cout << treeMinRec(head)->val << endl;
+  //cout << treeSuccessor(head->left->right)->val << endl;
+  //cout << treePredecessor(head->left->right)->val << endl;
 
 
   return 0;
